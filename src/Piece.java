@@ -76,7 +76,7 @@ public class Piece {
      * @param position  the new position of the piece
      */
     public void setPosition(String position) {
-        if(!Board.POSITIONS.contains(position)) {
+        if(!Board.POSITIONS.contains(position) && !position.equals(" ")) {
             throw new IllegalArgumentException(position + " is not a valid position.");
         }
         this.position = position;
