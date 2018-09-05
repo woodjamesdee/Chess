@@ -14,6 +14,7 @@ public class Piece {
     private String type;
     private String color;
     private String position;
+    private boolean captured;
 
     /**
      * Creates a new Piece with a given type, color, and position on the board.
@@ -34,6 +35,7 @@ public class Piece {
         this.type = type;
         this.color = color;
         this.position = position;
+        this.captured = false;
     }
 
     /**
@@ -76,9 +78,89 @@ public class Piece {
      * @param position  the new position of the piece
      */
     public void setPosition(String position) {
-        if(!Board.POSITIONS.contains(position) && !position.equals(" ")) {
+        if(!Board.POSITIONS.contains(position)) {
             throw new IllegalArgumentException(position + " is not a valid position.");
         }
         this.position = position;
+    }
+
+    public boolean getCaptured() {
+        return this.captured;
+    }
+
+    public void setCaptured() {
+        this.captured = true;
+        this.position = " ";
+    }
+
+    public String[] getPotentialMoves() {
+        if(this.captured) {
+            return null;
+        }
+        String[] returnArray = null;
+        switch(this.type) {
+            case " ":
+                returnArray = this.getPotentialPawnMoves();
+                break;
+            case "N":
+                returnArray = this.getPotentialKnightMoves();
+                break;
+            case "B":
+                returnArray = this.getPotentialBishopMoves();
+                break;
+            case "R":
+                returnArray = this.getPotentialRookMoves();
+                break;
+            case "Q":
+                returnArray = this.getPotentialQueenMoves();
+                break;
+            case "K":
+                returnArray = this.getPotentialKingMoves();
+                break;
+        }
+        return returnArray;
+    }
+
+    private String[] getPotentialPawnMoves() {
+        String[] returnArray;
+        int currentPositionIndex = Board.POSITIONS.indexOf(this.position);
+        if(this.color.equals("white")) {
+            if(!this.position.contains("a") && !this.position.contains("h")) {
+                returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 7), Board.POSITIONS.get(currentPositionIndex + 1), Board.POSITIONS.get(currentPositionIndex + 9)};
+            } else if(this.position.contains("a")) {
+                returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 7), Board.POSITIONS.get(currentPositionIndex + 1)};
+            } else {
+                returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex + 1), Board.POSITIONS.get(currentPositionIndex + 9)};
+            }
+        } else {
+            if(!this.position.contains("a") && !this.position.contains("h")) {
+                returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 9), Board.POSITIONS.get(currentPositionIndex - 1), Board.POSITIONS.get(currentPositionIndex + 7)};
+            } else if(this.position.contains("a")) {
+                returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 9), Board.POSITIONS.get(currentPositionIndex - 1)};
+            } else {
+                returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 1), Board.POSITIONS.get(currentPositionIndex + 7)};
+            }
+        }
+        return returnArray;
+    }
+
+    private String[] getPotentialKnightMoves() {
+        return null;
+    }
+
+    private String[] getPotentialBishopMoves() {
+        return null;
+    }
+
+    private String[] getPotentialRookMoves() {
+        return null;
+    }
+
+    private String[] getPotentialQueenMoves() {
+        return null;
+    }
+
+    private String[] getPotentialKingMoves() {
+        return null;
     }
 }
