@@ -84,15 +84,27 @@ public class Piece {
         this.position = position;
     }
 
+    /**
+     * Gets the status of this Piece.
+     * @return  the captured status of the Piece
+     */
     public boolean getCaptured() {
         return this.captured;
     }
 
+    /**
+     * Sets this piece to be captured. Also updates the position to " ".
+     */
     public void setCaptured() {
         this.captured = true;
         this.position = " ";
     }
 
+    /**
+     * Generates an array of potential moves for this Piece based on the current Board position.
+     * Does not take into account other Pieces, but does consider the boundaries of the board.
+     * @return  the possible moves of this Piece
+     */
     public String[] getPotentialMoves() {
         if(this.captured) {
             return null;
@@ -125,38 +137,34 @@ public class Piece {
         String[] returnArray;
         int currentPositionIndex = Board.POSITIONS.indexOf(this.position);
         if(this.color.equals("white")) {
-            if(!this.position.contains("a") && !this.position.contains("h")) {
+            if(!this.position.contains("a") && !this.position.contains("h")) { //Not an edge case
                 returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 7), Board.POSITIONS.get(currentPositionIndex + 1), Board.POSITIONS.get(currentPositionIndex + 9)};
-            } else if(this.position.contains("a")) {
+            } else if(this.position.contains("a")) { //In file a
                 returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 7), Board.POSITIONS.get(currentPositionIndex + 1)};
-            } else {
+            } else { //In file h
                 returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex + 1), Board.POSITIONS.get(currentPositionIndex + 9)};
             }
         } else {
-            if(!this.position.contains("a") && !this.position.contains("h")) {
+            if(!this.position.contains("a") && !this.position.contains("h")) { //Not an edge case
                 returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 9), Board.POSITIONS.get(currentPositionIndex - 1), Board.POSITIONS.get(currentPositionIndex + 7)};
-            } else if(this.position.contains("a")) {
+            } else if(this.position.contains("a")) { //In file a
                 returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 9), Board.POSITIONS.get(currentPositionIndex - 1)};
-            } else {
+            } else { //In file h
                 returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 1), Board.POSITIONS.get(currentPositionIndex + 7)};
             }
         }
         return returnArray;
     }
 
-    /**
-     *
-     * @return
-     */
     private String[] getPotentialKnightMoves() {
-        ArrayList<String> positions = new ArrayList<String>();
+        ArrayList<String> positions = new ArrayList<String>(); //Because the number of moves isn't determined at this point
         int currentPositionIndex = Board.POSITIONS.indexOf(this.position);
-        int[] ranks = new int[] {2, 1, -1, -2, -2, -1, 1, 2};
+        int[] ranks = new int[] {2, 1, -1, -2, -2, -1, 1, 2}; //Possible combinations of moves from the current index
         int[] files = new int[] {1, 2, 2, 1, -1, -2, -2, -1};
-        for(int i = 0; i < 8; i++) {
-            int index = currentPositionIndex + (ranks[i] + 8 * files[i]);
-            if(!(index < 0 || index >= Board.POSITIONS.size())) {
-                if(!(index % 8 > currentPositionIndex % 8 + 2 || index % 8 < currentPositionIndex % 8 - 2 ))
+        for(int i = 0; i < ranks.length; i++) {
+            int index = currentPositionIndex + (ranks[i] + 8 * files[i]); //The new index of the Knight
+            if(!(index < 0 || index >= Board.POSITIONS.size())) { //If the index is not out of bounds of the Board array
+                if(!(index % 8 > currentPositionIndex % 8 + 2 || index % 8 < currentPositionIndex % 8 - 2 )) //If the index is not more than two squares away in any direction
                 positions.add(Board.POSITIONS.get(index));
             }
         }
@@ -164,7 +172,54 @@ public class Piece {
     }
 
     private String[] getPotentialBishopMoves() {
-        return null;
+        ArrayList<String> positions = new ArrayList<String>();
+        int currentPositionIndex = Board.POSITIONS.indexOf(this.position);
+        boolean canUpLeft = true;
+        boolean canUpRight = true;
+        boolean canDownLeft = true;
+        boolean canDownRight = true;
+        for(int i = 1; i < 8; i++) {
+            int upLeft = (-9) * i + currentPositionIndex;
+            int upRight = (-7) * i + currentPositionIndex;
+            int downLeft = 7 * i + currentPositionIndex;
+            int downRight = 9 * i + currentPositionIndex;
+            if(!(upLeft < 0 || Math.abs((upLeft % 8) - (currentPositionIndex % 8)) != i) && canUpLeft) {
+                positions.add(Board.POSITIONS.get(upLeft));
+                if((upLeft % 8) - 1 < 0) {
+                    canUpLeft = false;
+                }
+            } else {
+                canUpLeft = false;
+            }
+            if(!(upRight < 0 || Math.abs((upRight % 8) - (currentPositionIndex % 8)) != i) && canUpRight) {
+                positions.add(Board.POSITIONS.get(upRight));
+                if((upRight % 8) + 1 > 7) {
+                    canUpRight = false;
+                }
+            } else {
+                canUpRight = false;
+            }
+            if(!(downLeft >= Board.POSITIONS.size() || Math.abs((downLeft % 8) - (currentPositionIndex % 8)) != i) && canDownLeft) {
+                positions.add(Board.POSITIONS.get(downLeft));
+                if((downLeft % 8) - 1 < 0) {
+                    canDownLeft = false;
+                }
+                System.out.println(Board.POSITIONS.get(downLeft));
+                System.out.println(downLeft % 8);
+            } else {
+                canDownLeft = false;
+            }
+            if(!(downRight >= Board.POSITIONS.size() || Math.abs((downRight % 8) - (currentPositionIndex % 8)) != i) && canDownRight) {
+                positions.add(Board.POSITIONS.get(downRight));
+                if((downRight % 8) + 1 > 7) {
+                    canDownRight = false;
+                }
+            } else {
+                canDownRight = false;
+            }
+
+        }
+        return positions.toArray(new String[0]);
     }
 
     private String[] getPotentialRookMoves() {
