@@ -144,8 +144,23 @@ public class Piece {
         return returnArray;
     }
 
+    /**
+     *
+     * @return
+     */
     private String[] getPotentialKnightMoves() {
-        return null;
+        ArrayList<String> positions = new ArrayList<String>();
+        int currentPositionIndex = Board.POSITIONS.indexOf(this.position);
+        int[] ranks = new int[] {2, 1, -1, -2, -2, -1, 1, 2};
+        int[] files = new int[] {1, 2, 2, 1, -1, -2, -2, -1};
+        for(int i = 0; i < 8; i++) {
+            int index = currentPositionIndex + (ranks[i] + 8 * files[i]);
+            if(!(index < 0 || index >= Board.POSITIONS.size())) {
+                if(!(index % 8 > currentPositionIndex % 8 + 2 || index % 8 < currentPositionIndex % 8 - 2 ))
+                positions.add(Board.POSITIONS.get(index));
+            }
+        }
+        return positions.toArray(new String[0]);
     }
 
     private String[] getPotentialBishopMoves() {
