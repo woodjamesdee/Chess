@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static java.util.Collections.addAll;
+
 /**
  * @author woodjamesdee
  *
@@ -105,11 +107,11 @@ public class Piece {
      * Does not take into account other Pieces, but does consider the boundaries of the board.
      * @return  the possible moves of this Piece
      */
-    public String[] getPotentialMoves() {
+    public ArrayList<String[]> getPotentialMoves() {
         if(this.captured) {
             return null;
         }
-        String[] returnArray = null;
+        ArrayList<String[]> returnArray = null;
         switch(this.type) {
             case " ":
                 returnArray = this.getPotentialPawnMoves();
@@ -133,30 +135,31 @@ public class Piece {
         return returnArray;
     }
 
-    private String[] getPotentialPawnMoves() {
-        String[] returnArray;
+    private ArrayList<String[]> getPotentialPawnMoves() {
+        ArrayList<String[]> returnArray = new ArrayList<String[]>();
         int currentPositionIndex = Board.POSITIONS.indexOf(this.position);
         if(this.color.equals("white")) {
             if(!this.position.contains("a") && !this.position.contains("h")) { //Not an edge case
-                returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 7), Board.POSITIONS.get(currentPositionIndex + 1), Board.POSITIONS.get(currentPositionIndex + 9)};
+                returnArray.add(new String[] {Board.POSITIONS.get(currentPositionIndex - 7), Board.POSITIONS.get(currentPositionIndex + 1), Board.POSITIONS.get(currentPositionIndex + 9)});
             } else if(this.position.contains("a")) { //In file a
-                returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 7), Board.POSITIONS.get(currentPositionIndex + 1)};
+                returnArray.add(new String[] {Board.POSITIONS.get(currentPositionIndex - 7), Board.POSITIONS.get(currentPositionIndex + 1)});
             } else { //In file h
-                returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex + 1), Board.POSITIONS.get(currentPositionIndex + 9)};
+                returnArray.add(new String[] {Board.POSITIONS.get(currentPositionIndex + 1), Board.POSITIONS.get(currentPositionIndex + 9)});
             }
         } else {
             if(!this.position.contains("a") && !this.position.contains("h")) { //Not an edge case
-                returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 9), Board.POSITIONS.get(currentPositionIndex - 1), Board.POSITIONS.get(currentPositionIndex + 7)};
+                returnArray.add(new String[] {Board.POSITIONS.get(currentPositionIndex - 9), Board.POSITIONS.get(currentPositionIndex - 1), Board.POSITIONS.get(currentPositionIndex + 7)});
             } else if(this.position.contains("a")) { //In file a
-                returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 9), Board.POSITIONS.get(currentPositionIndex - 1)};
+                returnArray.add(new String[] {Board.POSITIONS.get(currentPositionIndex - 9), Board.POSITIONS.get(currentPositionIndex - 1)});
             } else { //In file h
-                returnArray = new String[] {Board.POSITIONS.get(currentPositionIndex - 1), Board.POSITIONS.get(currentPositionIndex + 7)};
+                returnArray.add(new String[] {Board.POSITIONS.get(currentPositionIndex - 1), Board.POSITIONS.get(currentPositionIndex + 7)});
             }
         }
         return returnArray;
     }
 
-    private String[] getPotentialKnightMoves() {
+    private ArrayList<String[]> getPotentialKnightMoves() {
+        ArrayList<String[]> returnArray = new ArrayList<String[]>();
         ArrayList<String> positions = new ArrayList<String>(); //Because the number of moves isn't determined at this point
         int currentPositionIndex = Board.POSITIONS.indexOf(this.position);
         int[] ranks = new int[] {2, 1, -1, -2, -2, -1, 1, 2}; //Possible combinations of moves from the current index
@@ -168,11 +171,16 @@ public class Piece {
                 positions.add(Board.POSITIONS.get(index));
             }
         }
-        return positions.toArray(new String[0]);
+        returnArray.add(positions.toArray(new String[0]));
+        return returnArray;
     }
 
-    private String[] getPotentialBishopMoves() {
-        ArrayList<String> positions = new ArrayList<String>();
+    private ArrayList<String[]> getPotentialBishopMoves() {
+        ArrayList<String[]> returnArray = new ArrayList<String[]>();
+        ArrayList<String> upLeftPositions = new ArrayList<String>();
+        ArrayList<String> upRightPositions = new ArrayList<String>();
+        ArrayList<String> downLeftPositions = new ArrayList<String>();
+        ArrayList<String> downRightPositions = new ArrayList<String>();
         int currentPositionIndex = Board.POSITIONS.indexOf(this.position);
         boolean canUpLeft = true;
         boolean canUpRight = true;
@@ -184,7 +192,7 @@ public class Piece {
             int downLeft = 7 * i + currentPositionIndex;
             int downRight = 9 * i + currentPositionIndex;
             if(!(upLeft < 0 || Math.abs((upLeft % 8) - (currentPositionIndex % 8)) != i) && canUpLeft) {
-                positions.add(Board.POSITIONS.get(upLeft));
+                upLeftPositions.add(Board.POSITIONS.get(upLeft));
                 if((upLeft % 8) - 1 < 0) {
                     canUpLeft = false;
                 }
@@ -192,7 +200,7 @@ public class Piece {
                 canUpLeft = false;
             }
             if(!(upRight < 0 || Math.abs((upRight % 8) - (currentPositionIndex % 8)) != i) && canUpRight) {
-                positions.add(Board.POSITIONS.get(upRight));
+                upRightPositions.add(Board.POSITIONS.get(upRight));
                 if((upRight % 8) + 1 > 7) {
                     canUpRight = false;
                 }
@@ -200,37 +208,89 @@ public class Piece {
                 canUpRight = false;
             }
             if(!(downLeft >= Board.POSITIONS.size() || Math.abs((downLeft % 8) - (currentPositionIndex % 8)) != i) && canDownLeft) {
-                positions.add(Board.POSITIONS.get(downLeft));
+                downLeftPositions.add(Board.POSITIONS.get(downLeft));
                 if((downLeft % 8) - 1 < 0) {
                     canDownLeft = false;
                 }
-                System.out.println(Board.POSITIONS.get(downLeft));
-                System.out.println(downLeft % 8);
             } else {
                 canDownLeft = false;
             }
             if(!(downRight >= Board.POSITIONS.size() || Math.abs((downRight % 8) - (currentPositionIndex % 8)) != i) && canDownRight) {
-                positions.add(Board.POSITIONS.get(downRight));
+                downRightPositions.add(Board.POSITIONS.get(downRight));
                 if((downRight % 8) + 1 > 7) {
                     canDownRight = false;
                 }
             } else {
                 canDownRight = false;
             }
-
         }
-        return positions.toArray(new String[0]);
+        returnArray.add(upLeftPositions.toArray(new String[0]));
+        returnArray.add(upRightPositions.toArray(new String[0]));
+        returnArray.add(downLeftPositions.toArray(new String[0]));
+        returnArray.add(downRightPositions.toArray(new String[0]));
+        return returnArray;
     }
 
-    private String[] getPotentialRookMoves() {
-        return null;
+    private ArrayList<String[]> getPotentialRookMoves() {
+        ArrayList<String[]> returnArray = new ArrayList<String[]>();
+        ArrayList<String> upPositions = new ArrayList<String>();
+        ArrayList<String> leftPositions = new ArrayList<String>();
+        ArrayList<String> rightPositions = new ArrayList<String>();
+        ArrayList<String> downPositions = new ArrayList<String>();
+        int currentPositionIndex = Board.POSITIONS.indexOf(this.position);
+        boolean canRight = true;
+        boolean canLeft = true;
+        for(int i = 1; i < 8; i++) {
+            int up = (-8) * i + currentPositionIndex;
+            int left = (-1) * i + currentPositionIndex;
+            int right = i + currentPositionIndex;
+            int down = 8 * i + currentPositionIndex;
+            if(!(up < 0)) {
+                upPositions.add(Board.POSITIONS.get(up));
+            }
+            if(!(!canLeft || left < 0)) {
+                leftPositions.add(Board.POSITIONS.get(left));
+                if((left % 8) - 1 < 0) {
+                    canLeft = false;
+                }
+            }
+            if(!(!canRight || right >= Board.POSITIONS.size())) {
+                rightPositions.add(Board.POSITIONS.get(right));
+                if((right % 8) + 1 > 7) {
+                    canRight = false;
+                }
+            }
+            if(!(down >= Board.POSITIONS.size())) {
+                downPositions.add(Board.POSITIONS.get(down));
+            }
+        }
+        returnArray.add(upPositions.toArray(new String[0]));
+        returnArray.add(leftPositions.toArray(new String[0]));
+        returnArray.add(rightPositions.toArray(new String[0]));
+        returnArray.add(downPositions.toArray(new String[0]));
+        return returnArray;
     }
 
-    private String[] getPotentialQueenMoves() {
-        return null;
+    private ArrayList<String[]> getPotentialQueenMoves() {
+        ArrayList<String[]> returnArray = this.getPotentialBishopMoves();
+        returnArray.addAll(this.getPotentialRookMoves());
+        return returnArray;
     }
 
-    private String[] getPotentialKingMoves() {
-        return null;
+    private ArrayList<String[]> getPotentialKingMoves() {
+        ArrayList<String[]> returnArray = new ArrayList<String[]>();
+        ArrayList<String> positions = new ArrayList<String>();
+        int currentPositionIndex = Board.POSITIONS.indexOf(this.position);
+        int[] ranks = new int[] {-1, -1, -1, 0, 1, 1, 1, 0};
+        int[] files = new int[] {1, 0, -1, -1, -1, 0, 1, 1};
+        for(int i = 0; i < ranks.length; i++) {
+            int index = currentPositionIndex + (ranks[i] + 8 * files[i]);
+            if(!(index < 0 || index >= Board.POSITIONS.size())) {
+                if(!(index % 8 > currentPositionIndex % 8 + 2 || index % 8 < currentPositionIndex % 8 - 1 ))
+                    positions.add(Board.POSITIONS.get(index));
+            }
+        }
+        returnArray.add(positions.toArray(new String[0]));
+        return returnArray;
     }
 }
