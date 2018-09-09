@@ -17,6 +17,7 @@ public class Piece {
     private String color;
     private String position;
     private boolean captured;
+    private boolean hasMoved;
 
     /**
      * Creates a new Piece with a given type, color, and position on the board.
@@ -38,6 +39,7 @@ public class Piece {
         this.color = color;
         this.position = position;
         this.captured = false;
+        this.hasMoved = false;
     }
 
     /**
@@ -100,6 +102,21 @@ public class Piece {
     public void setCaptured() {
         this.captured = true;
         this.position = " ";
+    }
+
+    /**
+     * Gets the status of this Piece's hasMoved variable.
+     * @return true if it has moved, false if it has not
+     */
+    public boolean getMoved() {
+        return this.hasMoved;
+    }
+
+    /**
+     * Changes the state of the hasMoved variable to true (meaning it has moved).
+     */
+    public void setMoved() {
+        this.hasMoved = true;
     }
 
     /**

@@ -84,4 +84,14 @@ public class TestPiece {
         assertArrayEquals(new String[] {"e5", "e6", "e7", "e8"}, rook.getPotentialMoves().get(2));
         assertArrayEquals(new String[] {"d4", "c4", "b4", "a4"}, rook.getPotentialMoves().get(3));
     }
+
+    @Test
+    public void testKingPossibleMoves() {
+        king = new Piece("K", "white", "h1");
+        assertArrayEquals(new String[] {"h2", "g2", "g1"}, king.getPotentialMoves().get(0));
+        king.setPosition("a8");
+        assertArrayEquals(new String[] {"a7", "b7", "b8"}, king.getPotentialMoves().get(0));
+        king.setPosition("e4");
+        assertArrayEquals(new String[] {"d3", "e3", "f3", "f4", "f5", "e5", "d5", "d4"}, king.getPotentialMoves().get(0));
+    }
 }
