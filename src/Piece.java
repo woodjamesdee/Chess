@@ -163,6 +163,9 @@ public class Piece {
             } else { //In file h
                 returnArray.add(new String[] {Board.POSITIONS.get(currentPositionIndex + 1), Board.POSITIONS.get(currentPositionIndex + 9)});
             }
+            if(!hasMoved) {
+                returnArray.add(new String[] {Board.POSITIONS.get(currentPositionIndex + 2)});
+            }
         } else {
             if(!this.position.contains("a") && !this.position.contains("h")) { //Not an edge case
                 returnArray.add(new String[] {Board.POSITIONS.get(currentPositionIndex - 9), Board.POSITIONS.get(currentPositionIndex - 1), Board.POSITIONS.get(currentPositionIndex + 7)});
@@ -170,6 +173,9 @@ public class Piece {
                 returnArray.add(new String[] {Board.POSITIONS.get(currentPositionIndex - 9), Board.POSITIONS.get(currentPositionIndex - 1)});
             } else { //In file h
                 returnArray.add(new String[] {Board.POSITIONS.get(currentPositionIndex - 1), Board.POSITIONS.get(currentPositionIndex + 7)});
+            }
+            if(!hasMoved) {
+                returnArray.add(new String[] {Board.POSITIONS.get(currentPositionIndex - 2)});
             }
         }
         return returnArray;
@@ -308,6 +314,10 @@ public class Piece {
             }
         }
         returnArray.add(positions.toArray(new String[0]));
+        if(!this.hasMoved) {
+            String[] castlePositions = new String[] {Board.POSITIONS.get(currentPositionIndex - 2), Board.POSITIONS.get(currentPositionIndex + 2)};
+            returnArray.add(castlePositions);
+        }
         return returnArray;
     }
 }

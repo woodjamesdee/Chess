@@ -23,6 +23,7 @@ public class TestPiece {
     public void testPawnPossibleMoves() {
         pawn = new Piece(" ", "white", "d2");
         assertArrayEquals(new String[] {"e3", "d3", "c3"}, pawn.getPotentialMoves().get(0));
+        assertArrayEquals(new String[] {"d4"}, pawn.getPotentialMoves().get(1));
         pawn.setPosition("a2");
         assertArrayEquals(new String[] {"b3", "a3"}, pawn.getPotentialMoves().get(0));
         pawn.setPosition("h2");
@@ -88,10 +89,12 @@ public class TestPiece {
     @Test
     public void testKingPossibleMoves() {
         king = new Piece("K", "white", "h1");
+        king.setMoved();
         assertArrayEquals(new String[] {"h2", "g2", "g1"}, king.getPotentialMoves().get(0));
         king.setPosition("a8");
         assertArrayEquals(new String[] {"a7", "b7", "b8"}, king.getPotentialMoves().get(0));
-        king.setPosition("e4");
+        king = new Piece("K", "white", "e4");
         assertArrayEquals(new String[] {"d3", "e3", "f3", "f4", "f5", "e5", "d5", "d4"}, king.getPotentialMoves().get(0));
+        assertArrayEquals(new String[] {"e2", "e6"}, king.getPotentialMoves().get(1));
     }
 }
